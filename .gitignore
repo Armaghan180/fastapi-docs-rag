@@ -216,3 +216,12 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Project-specific
+# generated artifacts — reproducible via `python scripts/ingest.py`
+data/raw/
+data/processed/
+data/chroma/
+
+# eval outputs
+src/eval/results/
