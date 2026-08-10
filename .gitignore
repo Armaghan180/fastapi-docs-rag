@@ -217,6 +217,9 @@ __marimo__/
 # Streamlit
 .streamlit/secrets.toml
 
+# Claude Code local settings (machine-specific, not shared config)
+.claude/settings.local.json
+
 # Project-specific
 # generated artifacts — reproducible via `python scripts/ingest.py`
 data/raw/

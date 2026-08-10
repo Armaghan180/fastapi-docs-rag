@@ -16,9 +16,16 @@ EVAL_QUESTIONS_PATH = ROOT_DIR / "src" / "eval" / "questions.json"
 EVAL_RESULTS_DIR = ROOT_DIR / "src" / "eval" / "results"
 
 # --- Source docs ---
-FASTAPI_REPO = os.getenv("FASTAPI_REPO", "tiangolo/fastapi")
-FASTAPI_DOCS_COMMIT = os.getenv("FASTAPI_DOCS_COMMIT", "master")
+# Pinned to a specific commit (not "master") so the ingested corpus, the eval set's
+# ground-truth answers, and citation URLs all stay in sync even after the docs change upstream.
+FASTAPI_REPO = os.getenv("FASTAPI_REPO", "fastapi/fastapi")
+FASTAPI_DOCS_COMMIT = os.getenv("FASTAPI_DOCS_COMMIT", "244d66308d6c525f394d0c2ce32dabceb2ed262b")
 FASTAPI_DOCS_SUBPATH = "docs/en/docs"  # English docs only, markdown source
+
+# Skip auto-generated API reference stubs (mkdocstrings "::: fastapi.X" directives with
+# almost no prose) and underscore-prefixed meta/test files that aren't real doc content.
+EXCLUDED_DOC_PREFIXES = ("reference/",)
+EXCLUDED_DOC_NAME_PREFIX = "_"
 
 # --- Models ---
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
@@ -29,6 +36,12 @@ JUDGE_MODEL = "gpt-4o-mini"
 # --- Chunking ---
 FIXED_CHUNK_SIZE_TOKENS = 400
 FIXED_CHUNK_OVERLAP_TOKENS = 50
+
+# heading_based: sections larger than this get sub-split (with the same overlap/window
+# logic as fixed_size) so one long tutorial page can't become a single giant chunk.
+MAX_SECTION_TOKENS = 800
+
+FASTAPI_DOCS_SITE_URL = "https://fastapi.tiangolo.com"
 
 # --- Retrieval ---
 TOP_K = 5
