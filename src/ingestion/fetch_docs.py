@@ -36,6 +36,24 @@ SNIPPET_RE = re.compile(
 
 FENCE_LANG_BY_EXT = {".py": "python", ".json": "json", ".yml": "yaml", ".yaml": "yaml"}
 
+# MkDocs Material's "termy" extension wraps animated terminal examples in a <div class="termy">
+# and colors each line with <font color="#hex"> / <span style="..."> for the fake-terminal
+# effect. That's presentational noise once the HTML can't actually render (arbitrary hex codes
+# mixed into "console" text), so it's stripped down to plain text. This is intentionally
+# narrow -- it does NOT touch other HTML tags, since several doc pages legitimately show raw
+# HTML (<form>, <button>, <html>...) as code examples inside fences, and those must survive
+# untouched.
+TERMY_DIV_RE = re.compile(r'<div class="termy">\s*\n(.*?)\n\s*</div>', re.DOTALL)
+FONT_TAG_RE = re.compile(r"<font[^>]*>(.*?)</font>", re.DOTALL)
+SPAN_STYLE_RE = re.compile(r'<span style="[^"]*">(.*?)</span>', re.DOTALL)
+
+
+def clean_termy_markup(markdown: str) -> str:
+    markdown = TERMY_DIV_RE.sub(lambda m: m.group(1), markdown)
+    markdown = FONT_TAG_RE.sub(lambda m: m.group(1), markdown)
+    markdown = SPAN_STYLE_RE.sub(lambda m: m.group(1), markdown)
+    return markdown
+
 
 @dataclass
 class DocPage:
@@ -137,7 +155,8 @@ def fetch_all_docs() -> tuple[list[DocPage], dict]:
     for repo_path in doc_paths:
         raw = fetch_raw(session, repo, commit, repo_path)
         resolved = resolve_snippets(raw, session, repo, commit, snippet_cache)
-        pages.append(DocPage(repo_path=repo_path, relative_path=repo_path[len(prefix):], content=resolved))
+        cleaned = clean_termy_markup(resolved)
+        pages.append(DocPage(repo_path=repo_path, relative_path=repo_path[len(prefix):], content=cleaned))
 
     manifest = {
         "repo": repo,

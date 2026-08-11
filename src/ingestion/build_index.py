@@ -67,7 +67,9 @@ def build_chroma_collection(strategy: str, chunks: list[base.Chunk]) -> None:
     client = OpenAI(api_key=config.OPENAI_API_KEY)
     embeddings = embed_texts(client, [c.text for c in chunks])
 
-    chroma_client = chromadb.PersistentClient(path=str(config.CHROMA_DIR))
+    chroma_client = chromadb.PersistentClient(
+        path=str(config.CHROMA_DIR), settings=chromadb.Settings(anonymized_telemetry=False)
+    )
     try:
         chroma_client.delete_collection(strategy)
     except Exception:
