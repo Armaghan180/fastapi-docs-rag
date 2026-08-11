@@ -74,7 +74,9 @@ def build_chroma_collection(strategy: str, chunks: list[base.Chunk]) -> None:
         chroma_client.delete_collection(strategy)
     except Exception:
         pass
-    collection = chroma_client.create_collection(strategy)
+    # OpenAI embeddings are meant to be compared by cosine similarity; Chroma defaults to
+    # raw L2 distance unless told otherwise.
+    collection = chroma_client.create_collection(strategy, metadata={"hnsw:space": "cosine"})
 
     collection.add(
         ids=[c.id for c in chunks],

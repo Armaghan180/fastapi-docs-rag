@@ -45,7 +45,10 @@ FASTAPI_DOCS_SITE_URL = "https://fastapi.tiangolo.com"
 
 # --- Retrieval ---
 TOP_K = 5
-HYBRID_DENSE_WEIGHT = 0.5  # used in reciprocal rank fusion
+# hybrid: each of dense/BM25 retrieves this many candidates before Reciprocal Rank Fusion
+# trims down to TOP_K. RRF_K=60 is the standard constant from Cormack et al. (2009).
+CANDIDATE_POOL_SIZE = 20
+RRF_K = 60
 
 # --- Strategy matrix (the eval compares these configs) ---
 # Each entry: (chunking_strategy, retrieval_method)
