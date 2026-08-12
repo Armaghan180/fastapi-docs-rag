@@ -63,5 +63,5 @@ streamlit run app/streamlit_app.py  # start the UI
 
 ## Status
 
-Ingestion, retrieval, generation, and eval are built and passing. FastAPI backend and
-Streamlit UI are next.
+Complete: ingestion, retrieval, generation, eval, FastAPI backend, and Streamlit UI are all
+built and verified end-to-end.
