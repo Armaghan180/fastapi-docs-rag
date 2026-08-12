@@ -10,6 +10,23 @@ strategy (fixed-size vs. heading-based) and retrieval method (dense vs. hybrid d
 measured with both retrieval metrics (Recall@k, MRR) and LLM-judged answer quality
 (correctness, faithfulness, citation accuracy).
 
+## Results
+
+Eval run against 20 ground-truth questions (19 answerable + 1 deliberately out-of-scope,
+to test whether the system declines instead of hallucinating), `top_k=5`:
+
+| Config | Recall@k | MRR | Citation Accuracy | Correctness (0-2) | Faithfulness (0-2) |
+|---|---|---|---|---|---|
+| fixed_size + dense (baseline) | 0.95 | 0.86 | 0.84 | 1.90 | 1.95 |
+| heading_based + dense | 1.00 | 0.90 | 0.95 | 1.95 | 2.00 |
+| heading_based + hybrid | 0.95 | 0.82 | 0.89 | 2.00 | 2.00 |
+
+Heading-based chunking beats the fixed-size baseline on every metric — the core hypothesis
+(coherent section boundaries retrieve better than arbitrary token windows) held up.
+Hybrid retrieval didn't clearly beat dense-only on Recall@k/MRR here, plausibly because most
+of these questions are conceptual rather than exact-identifier lookups (`BackgroundTasks`,
+`status_code=201`) where BM25's keyword matching would matter more.
+
 ## Architecture
 
 ```
@@ -46,4 +63,5 @@ streamlit run app/streamlit_app.py  # start the UI
 
 ## Status
 
-Project scaffolded. Ingestion, retrieval, generation, eval, and UI are being built next.
+Ingestion, retrieval, generation, and eval are built and passing. FastAPI backend and
+Streamlit UI are next.
