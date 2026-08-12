@@ -27,6 +27,9 @@ FASTAPI_DOCS_SUBPATH = "docs/en/docs"  # English docs only, markdown source
 EXCLUDED_DOC_PREFIXES = ("reference/",)
 EXCLUDED_DOC_NAME_PREFIX = "_"
 
+# --- API / UI ---
+API_BASE_URL = os.getenv("API_BASE_URL", "http://127.0.0.1:8000")
+
 # --- Models ---
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 EMBEDDING_MODEL = "text-embedding-3-small"
