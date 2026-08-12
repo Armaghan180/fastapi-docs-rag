@@ -57,7 +57,7 @@ copy .env.example .env   # then fill in OPENAI_API_KEY
 ```bash
 python scripts/ingest.py      # fetch + chunk + index the docs (all strategies)
 python scripts/evaluate.py    # run the eval matrix, print comparison report
-uvicorn src.api.main:app --reload   # start the backend
+python -m uvicorn src.api.main:app --reload   # start the backend
 streamlit run app/streamlit_app.py  # start the UI
 ```
 
