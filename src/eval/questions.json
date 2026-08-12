@@ -1,0 +1,162 @@
+[
+  {
+    "id": "path-params-types",
+    "topic": "path_params",
+    "question": "How do I declare a path parameter with a specific type in FastAPI, and what happens if the client passes the wrong type?",
+    "expected_answer": "Declare it with a standard Python type annotation on the function parameter, e.g. `item_id: int` in `async def read_item(item_id: int)`. FastAPI automatically converts and validates it. If the client passes a value that isn't a valid int (e.g. `/items/foo`), FastAPI returns an HTTP error with a JSON body explaining exactly which field failed validation and why (e.g. 'Input should be a valid integer').",
+    "source_doc_path": "tutorial/path-params.md",
+    "source_url": "https://fastapi.tiangolo.com/tutorial/path-params/#data-validation"
+  },
+  {
+    "id": "query-params-optional",
+    "topic": "query_params",
+    "question": "How do I make a query parameter optional in FastAPI?",
+    "expected_answer": "Give the function parameter a default value of `None`, e.g. `q: str | None = None`. FastAPI recognizes it's not part of the path, treats it as a query parameter, and makes it optional with `None` as the default when the client doesn't supply it.",
+    "source_doc_path": "tutorial/query-params.md",
+    "source_url": "https://fastapi.tiangolo.com/tutorial/query-params/#optional-parameters"
+  },
+  {
+    "id": "response-model-purpose",
+    "topic": "response_model",
+    "question": "What does the response_model parameter do on a path operation decorator?",
+    "expected_answer": "It lets you declare the shape of the response data separately from what your function actually returns (e.g. you return a dict or a database object but declare `response_model` as a Pydantic model). FastAPI uses it to validate, document, and filter the output data, converting/limiting the returned data to match that model even if your function returns extra fields.",
+    "source_doc_path": "tutorial/response-model.md",
+    "source_url": "https://fastapi.tiangolo.com/tutorial/response-model/#response-model-parameter"
+  },
+  {
+    "id": "background-tasks-add-task",
+    "topic": "background_tasks",
+    "question": "How do I run a background task after returning a response in FastAPI?",
+    "expected_answer": "Declare a parameter of type `BackgroundTasks` in your path operation function, then call its `.add_task()` method, passing the task function plus any positional and keyword arguments it needs (e.g. `background_tasks.add_task(write_notification, email, message=\"some notification\")`). The task runs after the response has been sent to the client.",
+    "source_doc_path": "tutorial/background-tasks.md",
+    "source_url": "https://fastapi.tiangolo.com/tutorial/background-tasks/#add-the-background-task"
+  },
+  {
+    "id": "dependency-injection-definition",
+    "topic": "dependencies",
+    "question": "What does FastAPI mean by a 'dependency', and what is dependency injection used for?",
+    "expected_answer": "A dependency is just a function (or callable) that a path operation function declares it needs, and FastAPI takes care of calling it and providing (\"injecting\") its result. It's used to share logic across endpoints, share database connections, and enforce things like security/authentication/role checks, all while minimizing code repetition.",
+    "source_doc_path": "tutorial/dependencies/index.md",
+    "source_url": "https://fastapi.tiangolo.com/tutorial/dependencies/#what-is-dependency-injection"
+  },
+  {
+    "id": "jwt-signing-algorithm",
+    "topic": "security",
+    "question": "In FastAPI's OAuth2 + JWT tutorial, what algorithm is used to sign the JWT access tokens?",
+    "expected_answer": "HS256 (set via `ALGORITHM = \"HS256\"`, used together with a `SECRET_KEY` when calling `jwt.encode(...)`).",
+    "source_doc_path": "tutorial/security/oauth2-jwt.md",
+    "source_url": "https://fastapi.tiangolo.com/tutorial/security/oauth2-jwt/#hash-and-verify-the-passwords"
+  },
+  {
+    "id": "custom-middleware",
+    "topic": "middleware",
+    "question": "How do I add a custom middleware in FastAPI that runs code before and after every request?",
+    "expected_answer": "Use the `@app.middleware(\"http\")` decorator on top of a function. The function receives the `request` and a `call_next` function; it can run code, then call `await call_next(request)` to get the `response` from the rest of the app, optionally modify the response, and return it.",
+    "source_doc_path": "tutorial/middleware.md",
+    "source_url": "https://fastapi.tiangolo.com/tutorial/middleware/#create-a-middleware"
+  },
+  {
+    "id": "cors-middleware",
+    "topic": "cors",
+    "question": "What do I use to enable CORS in a FastAPI application?",
+    "expected_answer": "Import `CORSMiddleware` from `fastapi.middleware.cors` and register it with `app.add_middleware(CORSMiddleware, ...)`, configuring allowed origins, methods, headers, and credentials as needed.",
+    "source_doc_path": "tutorial/cors.md",
+    "source_url": "https://fastapi.tiangolo.com/tutorial/cors/#use-corsmiddleware"
+  },
+  {
+    "id": "sql-databases-library",
+    "topic": "databases",
+    "question": "What library does FastAPI's SQL databases tutorial use to work with a relational database?",
+    "expected_answer": "SQLModel, a library built on top of SQLAlchemy and Pydantic by the same author as FastAPI. FastAPI itself doesn't require any specific database library -- any SQL or NoSQL library works -- but the tutorial uses SQLModel as the example.",
+    "source_doc_path": "tutorial/sql-databases.md",
+    "source_url": "https://fastapi.tiangolo.com/tutorial/sql-databases/#install-sqlmodel"
+  },
+  {
+    "id": "lifespan-events",
+    "topic": "lifespan_events",
+    "question": "How do I run startup and shutdown code in a FastAPI application?",
+    "expected_answer": "Use the `lifespan` parameter of the `FastAPI` app, passing an async context manager function (decorated with `@asynccontextmanager`) where code before the `yield` runs on startup and code after the `yield` runs on shutdown. This replaced the older, now-deprecated `@app.on_event(\"startup\")`/`@app.on_event(\"shutdown\")` decorators.",
+    "source_doc_path": "advanced/events.md",
+    "source_url": "https://fastapi.tiangolo.com/advanced/events/#lifespan"
+  },
+  {
+    "id": "websocket-endpoint",
+    "topic": "websockets",
+    "question": "How do I declare a WebSocket endpoint in FastAPI?",
+    "expected_answer": "Import `WebSocket` from `fastapi`, and use the `@app.websocket(\"/ws\")` decorator on an async function that takes a `websocket: WebSocket` parameter, e.g. `async def websocket_endpoint(websocket: WebSocket)`. You also need the `websockets` library installed.",
+    "source_doc_path": "advanced/websockets.md",
+    "source_url": "https://fastapi.tiangolo.com/advanced/websockets/#create-a-websocket"
+  },
+  {
+    "id": "return-raw-html",
+    "topic": "custom_response",
+    "question": "How do I return raw HTML directly from a path operation in FastAPI?",
+    "expected_answer": "Import `HTMLResponse` from `fastapi.responses` and pass it as the `response_class` parameter of the path operation decorator, e.g. `@app.get(\"/items/\", response_class=HTMLResponse)`, then return an HTML string from the function.",
+    "source_doc_path": "advanced/custom-response.md",
+    "source_url": "https://fastapi.tiangolo.com/advanced/custom-response/#html-response"
+  },
+  {
+    "id": "docker-cmd-instruction",
+    "topic": "deployment",
+    "question": "In FastAPI's official Docker deployment example, what CMD instruction does the Dockerfile use to run the app?",
+    "expected_answer": "`CMD [\"fastapi\", \"run\", \"app/main.py\", \"--port\", \"80\"]` -- running the app on port 80 with the `fastapi run` command (add `--proxy-headers` if running behind a proxy like Nginx or Traefik).",
+    "source_doc_path": "deployment/docker.md",
+    "source_url": "https://fastapi.tiangolo.com/deployment/docker/#dockerfile"
+  },
+  {
+    "id": "testing-client",
+    "topic": "testing",
+    "question": "What does FastAPI recommend for testing an application, and what is it built on?",
+    "expected_answer": "`TestClient`, provided by Starlette and based on HTTPX (which is itself designed based on the Requests library). It lets you use pytest directly with FastAPI applications.",
+    "source_doc_path": "tutorial/testing.md",
+    "source_url": "https://fastapi.tiangolo.com/tutorial/testing/#using-testclient"
+  },
+  {
+    "id": "include-router",
+    "topic": "bigger_apps",
+    "question": "How do I include a router from another module into my main FastAPI app?",
+    "expected_answer": "Call `app.include_router(...)` on your main `FastAPI` app instance, passing the `APIRouter` instance from the other module, e.g. `app.include_router(users.router)`. You can also pass options like `prefix`, `tags`, and `dependencies`.",
+    "source_doc_path": "tutorial/bigger-applications.md",
+    "source_url": "https://fastapi.tiangolo.com/tutorial/bigger-applications/#import-fastapi"
+  },
+  {
+    "id": "custom-http-error",
+    "topic": "error_handling",
+    "question": "How do I return a custom HTTP error with a specific status code in FastAPI?",
+    "expected_answer": "Raise an `HTTPException` from `fastapi`, passing `status_code` and `detail`, e.g. `raise HTTPException(status_code=404, detail=\"Item not found\")`. It's a normal Python exception that FastAPI catches and converts into the corresponding HTTP error response, stopping the rest of the function from running.",
+    "source_doc_path": "tutorial/handling-errors.md",
+    "source_url": "https://fastapi.tiangolo.com/tutorial/handling-errors/#use-httpexception"
+  },
+  {
+    "id": "additional-status-codes",
+    "topic": "status_codes",
+    "question": "How do I return a different status code than the default for a specific case, while keeping the normal default status code for the rest of the path operation?",
+    "expected_answer": "Return a `Response` (e.g. `JSONResponse`) directly from the path operation function and set its `status_code` explicitly, instead of relying on the decorator's default status code -- e.g. returning 201 for newly-created items while the decorator's default stays 200.",
+    "source_doc_path": "advanced/additional-status-codes.md",
+    "source_url": "https://fastapi.tiangolo.com/advanced/additional-status-codes/#additional-status-codes"
+  },
+  {
+    "id": "graphql-support",
+    "topic": "graphql",
+    "question": "Does FastAPI have built-in native support for GraphQL?",
+    "expected_answer": "No. FastAPI doesn't have built-in GraphQL support, but because it's based on the ASGI standard, it's easy to integrate any ASGI-compatible GraphQL library alongside normal FastAPI path operations -- the docs point to Strawberry, Ariadne, and Tartiflette as options.",
+    "source_doc_path": "how-to/graphql.md",
+    "source_url": "https://fastapi.tiangolo.com/how-to/graphql/#graphql-libraries"
+  },
+  {
+    "id": "dependencies-with-yield",
+    "topic": "dependencies_yield",
+    "question": "How do I run cleanup code after a dependency finishes, e.g. to close a database session?",
+    "expected_answer": "Use `yield` instead of `return` in the dependency function, and put the cleanup code after the `yield` statement. FastAPI runs the code up to and including the `yield` before the response, then runs the code after `yield` once the response has been sent. This works the same way as `@contextlib.contextmanager`/`@contextlib.asynccontextmanager`, which FastAPI uses internally.",
+    "source_doc_path": "tutorial/dependencies/dependencies-with-yield.md",
+    "source_url": "https://fastapi.tiangolo.com/tutorial/dependencies/dependencies-with-yield/#a-database-dependency-with-yield"
+  },
+  {
+    "id": "grpc-out-of-scope",
+    "topic": "out_of_scope",
+    "question": "How do I define a gRPC service method as a FastAPI path operation?",
+    "expected_answer": "This isn't covered by FastAPI's documentation -- FastAPI path operations are built around HTTP/ASGI, not gRPC, and the docs don't describe any built-in gRPC integration. A faithful answer should say this isn't covered rather than inventing a gRPC-specific FastAPI feature.",
+    "source_doc_path": null,
+    "source_url": null
+  }
+]
